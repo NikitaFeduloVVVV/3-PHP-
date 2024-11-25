@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма ввода данных</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+            margin: 0;
+        }
+        .form-container {
+            background-color: white; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            padding: 20px; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+            width: 400px; 
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="password"],
+        select {
+            width: 90%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 14px; 
+        }
+        button {
+            width: 90%; 
+            padding: 10px;
+            margin-top: 10px; 
+            background-color: green;
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        button:hover {
+            background-color: darkgreen; 
+        }
+        .age-display {
+            margin-top: 10px; 
+            font-size: 14px; 
+            color: #333; 
+        }
+        .error-message {
+            color: red; 
+            font-size: 12px;
+        }
+        .toggle-password {
+            cursor: pointer; 
+            margin-left: -30px;
+        }
+    </style>
+    <script>
+        function validateForm(event) {
+            const consentCheckbox = document.getElementById('soglasie');
+            const passwordInput = document.getElementById('password');
+            const passwordValue = passwordInput.value;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+            const fioInput = document.getElementById('fio');
+            const fioValue = fioInput.value;
+            const fioRegex = /^[А-ЯЁ][а-яё]+\s[А-ЯЁ][а-яё]+\s[А-ЯЁ][а-яё]+$/; 
+            let isValid = true;
+            if (!consentCheckbox.checked) {
+                event.preventDefault();
+                alert('Пожалуйста, дайте согласие на обработку персональных данных.');
+                isValid = false;
+            }
+            if (!passwordRegex.test(passwordValue)) {
+                event.preventDefault();
+                const errorMessage = document.getElementById('password-error');
+                errorMessage.textContent = 'Пароль должен быть длиной 6 символов, содержать хотя бы одну заглавную букву, одну маленькую букву и одну цифру.';
+                isValid = false;
+            }
+            if (!fioRegex.test(fioValue)) {
+                event.preventDefault();
+                alert('ФИО должно быть в формате: "Фамилия Имя Отчество", например: "Иванов Иван Иванович".');
+                isValid = false;
+            }
+            return isValid; 
+        }
+        
+        function visPass() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.getElementById('toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = 'Скрыть пароль';
+            } else {
+                passwordInput.type = 'password';
+
+
+                toggleButton.textContent = 'Показать пароль';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Форма ввода данных</h1>
+        <form method="POST" action="save.php" onsubmit="validateForm(event)">
+            <label for="fio">ФИО:</label>
+            <input type="text" name="fio" id="fio" required>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required><br>
+            <label for="date_rozh">Дата рождения:</label>
+            <input type="date" name="date_rozh" id="date_rozh" required onchange="calculateAge()">
+            <div class="age-display" id="ageDisplay"></div>
+            <label for="phone">Номер телефона:</label>
+            <input type="text" name="phone" id="phone" required><br>
+            <label for="password">Пароль:</label>
+            <input type="password" name="password" id="password" required><br>
+            <div class="error-message" id="password-error"></div> 
+            <span class="toggle-password" id="toggle-password" onclick="togglePasswordVisibility()"></span><br>
+            <label>Пол:</label><br>
+            <input type="radio" name="gender" value="male" required> Мужской
+            <input type="radio" name="gender" value="female"> Женский<br><br>
+            <label for="region">Регион:</label>
+            <select name="region" id="region" required>
+                <option value="">Выберите регион</option>
+                <option value="chelyabinsk">Челябинская область</option>
+                <option value="ekaterinburg">Свердловская область</option>
+                <option value="kazan">Республика Татарстан</option>
+                <option value="moscow">Москва</option>
+                <option value="novosibirsk">Новосибирская область</option>
+                <option value="rostov_on_don">Ростовская область</option>
+                <option value="samara">Самарская область</option>
+                <option value="st_petersburg">Санкт-Петербург</option>
+                <option value="tolyatti">Тольятти</option>
+                <option value="nizhny_novgorod">Нижегородская область</option>
+            </select>
+            <label><br>
+                <input type="checkbox" name="soglasie" id="soglasie" required> Я даю согласие на обработку персональных данных.
+            </label><br>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+</body>
+</html>
